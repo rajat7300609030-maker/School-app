@@ -1,10 +1,12 @@
 package com.example
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
@@ -76,6 +78,25 @@ class MainActivity : ComponentActivity() {
         filePathCallback = null
     }
 
+    private val requestMultiplePermissionsLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()
+    ) { _ -> }
+
+    private fun requestAppPermissions() {
+        val permissionsToRequest = mutableListOf<String>()
+        permissionsToRequest.add(android.Manifest.permission.CAMERA)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            permissionsToRequest.add(android.Manifest.permission.POST_NOTIFICATIONS)
+            permissionsToRequest.add(android.Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            permissionsToRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+            permissionsToRequest.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        }
+
+        requestMultiplePermissionsLauncher.launch(permissionsToRequest.toTypedArray())
+    }
+
     inner class WebShareInterface {
         @android.webkit.JavascriptInterface
         fun share(title: String?, text: String?, url: String?) {
@@ -98,6 +119,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        requestAppPermissions()
 
         // Initialize Google Mobile Ads SDK
         MobileAds.initialize(this) {
@@ -439,6 +462,35 @@ class MainActivity : ComponentActivity() {
                             }
 
                             addJavascriptInterface(WebShareInterface(), "AndroidShare")
+
+                            setDownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
+                                try {
+                                    val request = DownloadManager.Request(Uri.parse(url)).apply {
+                                        setMimeType(mimetype)
+                                        addRequestHeader("User-Agent", userAgent)
+                                        val cookie = CookieManager.getInstance().getCookie(url)
+                                        addRequestHeader("Cookie", cookie)
+                                        val fileName = URLUtil.guessFileName(url, contentDisposition, mimetype) ?: "Download"
+                                        setTitle(fileName)
+                                        setDescription("Downloading PDF or File...")
+                                        allowScanningByMediaScanner()
+                                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+                                    }
+                                    val dm = ctx.getSystemService(android.content.Context.DOWNLOAD_SERVICE) as DownloadManager
+                                    dm.enqueue(request)
+                                    Toast.makeText(ctx, "Downloading PDF or File...", Toast.LENGTH_SHORT).show()
+                                } catch (e: Exception) {
+                                    try {
+                                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                                            data = Uri.parse(url)
+                                        }
+                                        ctx.startActivity(intent)
+                                    } catch (ex: Exception) {
+                                        Toast.makeText(ctx, "Download failed: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
 
                             webViewRef = this
                             loadUrl(targetUrl)
