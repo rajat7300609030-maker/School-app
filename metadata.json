@@ -1,0 +1,6 @@
+{
+  "name": "The Education Hills",
+  "description": "A WebView app for The Education Hills with AdMob banner and interstitial ad support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

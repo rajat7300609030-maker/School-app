@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- ================= LAUREL WREATH (LEFT) ================= -->
+    <!-- Left Stem -->
+    <path
+        android:pathData="M 28,75 Q 15,64 21,34"
+        android:strokeWidth="1.5"
+        android:strokeColor="#2F6690"
+        android:strokeLineCap="round" />
+
+    <!-- Left Leaves -->
+    <path android:pathData="M 21,34 C 18,31 23,28 25,32 C 27,36 24,37 21,34 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 18,44 C 15,41 20,38 22,42 C 24,46 21,47 18,44 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 17,54 C 14,51 19,48 21,52 C 23,56 20,57 17,54 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 18,64 C 15,61 20,58 22,62 C 24,66 21,67 18,64 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 22,73 C 19,70 24,67 26,71 C 28,75 25,76 22,73 Z" android:fillColor="#2F6690" />
+
+    <!-- ================= LAUREL WREATH (RIGHT) ================= -->
+    <!-- Right Stem -->
+    <path
+        android:pathData="M 80,75 Q 93,64 87,34"
+        android:strokeWidth="1.5"
+        android:strokeColor="#2F6690"
+        android:strokeLineCap="round" />
+
+    <!-- Right Leaves -->
+    <path android:pathData="M 87,34 C 90,31 85,28 83,32 C 81,36 84,37 87,34 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 90,44 C 93,41 88,38 86,42 C 84,46 87,47 90,44 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 91,54 C 94,51 89,48 87,52 C 85,56 88,57 91,54 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 90,64 C 93,61 88,58 86,62 C 84,66 87,67 90,64 Z" android:fillColor="#2F6690" />
+    <path android:pathData="M 86,73 C 89,70 84,67 82,71 C 80,75 83,76 86,73 Z" android:fillColor="#2F6690" />
+
+
+    <!-- ================= MAIN SHIELD ================= -->
+    <!-- Outer Shield Border (Deep Blue) -->
+    <path
+        android:pathData="M 54,18 C 69,18 78,21 78,32 C 78,57 54,77 54,79 C 54,77 30,57 30,32 C 30,21 39,18 54,18 Z"
+        android:fillColor="#1D4ED8" /> <!-- Blue 700 -->
+
+    <!-- Inner Shield (Lighter Slate Blue / Ivory Background) -->
+    <path
+        android:pathData="M 54,21 C 66,21 75,24 75,33 C 75,55 54,74 54,76 C 54,74 33,55 33,33 C 33,24 42,21 54,21 Z"
+        android:fillColor="#F1F5F9" /> <!-- Slate 100 -->
+
+
+    <!-- ================= SHIELD CONTENTS ================= -->
+    <!-- 1. Rising Sun (Orange/Amber) -->
+    <path
+        android:pathData="M 39,43 A 15,15 0 0,1 69,43 Z"
+        android:fillColor="#D97706" /> <!-- Amber 600 -->
+
+    <!-- Sun Rays radiating outwards -->
+    <path android:pathData="M 54,25 L 54,28" android:strokeWidth="1" android:strokeColor="#F59E0B" />
+    <path android:pathData="M 45,29 L 47,31" android:strokeWidth="1" android:strokeColor="#F59E0B" />
+    <path android:pathData="M 63,29 L 61,31" android:strokeWidth="1" android:strokeColor="#F59E0B" />
+    <path android:pathData="M 38,36 L 40,37" android:strokeWidth="1" android:strokeColor="#F59E0B" />
+    <path android:pathData="M 70,36 L 68,37" android:strokeWidth="1" android:strokeColor="#F59E0B" />
+
+    <!-- 2. Snowy Mountain peaks -->
+    <!-- Background smaller peak -->
+    <path
+        android:pathData="M 40,43 L 48,32 L 56,43 Z"
+        android:fillColor="#CBD5E1" /> <!-- Slate 300 -->
+    <!-- Foreground main peak -->
+    <path
+        android:pathData="M 46,43 L 56,26 L 68,43 Z"
+        android:fillColor="#ECEFF1" /> <!-- Cool Grey 50 -->
+    <path
+        android:pathData="M 56,26 L 56,43 L 68,43 Z"
+        android:fillColor="#E2E8F0" /> <!-- Shadow Side of Peak (Slate 200) -->
+
+
+    <!-- 3. Open Book in Foreground of Mountain -->
+    <!-- Left Page -->
+    <path
+        android:pathData="M 37,45 C 47,41 53,42 54,45 L 54,58 C 53,55 47,54 37,58 Z"
+        android:fillColor="#FFFFFF" />
+    <!-- Right Page -->
+    <path
+        android:pathData="M 71,45 C 61,41 55,42 54,45 L 54,58 C 55,55 61,54 71,58 Z"
+        android:fillColor="#F8FAFC" /> <!-- Slate 50 (slightly shaded right page) -->
+    <!-- Central Spine divider -->
+    <path
+        android:pathData="M 54,45 L 54,58"
+        android:strokeWidth="1"
+        android:strokeColor="#94A3B8" />
+
+    <!-- 4. Text Placeholder inside Shield "T.E.H." in simple crisp geometric vectors -->
+    <!-- 'T' -->
+    <path android:pathData="M 42,61 L 46,61 M 44,61 L 44,66" android:strokeWidth="1" android:strokeColor="#B45309" />
+    <!-- 'E' -->
+    <path android:pathData="M 51,61 L 55,61 M 51,61 L 51,66 M 51,63.5 L 54,63.5 M 51,66 L 55,66" android:strokeWidth="1" android:strokeColor="#B45309" />
+    <!-- 'H' -->
+    <path android:pathData="M 60,61 L 60,66 M 64,61 L 64,66 M 60,63.5 L 64,63.5" android:strokeWidth="1" android:strokeColor="#B45309" />
+
+
+    <!-- ================= BRANDING BANNER RIBBON ================= -->
+    <!-- Ribbon background backing shadow nodes -->
+    <path android:pathData="M 23,80 L 30,73 L 30,81 Z" android:fillColor="#1E3A8A" />
+    <path android:pathData="M 85,80 L 78,73 L 78,81 Z" android:fillColor="#1E3A8A" />
+
+    <!-- Main Ribbon Body containing "THE EDUCATION HILLS" -->
+    <path
+        android:pathData="M 25,74 L 83,74 L 80,82 L 28,82 Z"
+        android:fillColor="#2563EB" /> <!-- Blue 600 -->
+
+    <!-- Text styling details representing ribbon text segments -->
+    <path
+        android:pathData="M 33,78 L 75,78"
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round" />
+
+</vector>
