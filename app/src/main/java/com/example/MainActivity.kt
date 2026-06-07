@@ -1,7 +1,9 @@
 package com.example
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.webkit.*
@@ -48,6 +50,50 @@ class MainActivity : ComponentActivity() {
 
     private var mInterstitialAd: InterstitialAd? = null
     private var isAdLoading = false
+
+    // File chooser callback state for web uploads
+    private var filePathCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val results = if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val dataString = result.data?.dataString
+            val clipData = result.data?.clipData
+            if (clipData != null) {
+                val count = clipData.itemCount
+                val uris = Array(count) { i -> clipData.getItemAt(i).uri }
+                uris
+            } else if (dataString != null) {
+                arrayOf(Uri.parse(dataString))
+            } else {
+                null
+            }
+        } else {
+            null
+        }
+        filePathCallback?.onReceiveValue(results)
+        filePathCallback = null
+    }
+
+    inner class WebShareInterface {
+        @android.webkit.JavascriptInterface
+        fun share(title: String?, text: String?, url: String?) {
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                val body = buildString {
+                    if (!title.isNullOrEmpty()) append("$title\n")
+                    if (!text.isNullOrEmpty()) append("$text\n")
+                    if (!url.isNullOrEmpty()) append(url)
+                }
+                putExtra(Intent.EXTRA_TEXT, body)
+                if (!title.isNullOrEmpty()) {
+                    putExtra(Intent.EXTRA_SUBJECT, title)
+                }
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share learning resource"))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -287,6 +333,43 @@ class MainActivity : ComponentActivity() {
                                     isPageLoading = false
                                     canGoBack = view?.canGoBack() == true
                                     canGoForward = view?.canGoForward() == true
+
+                                    // Inject bridge for window.navigator.share
+                                    view?.evaluateJavascript(
+                                        """
+                                        (function() {
+                                            if (!navigator.share || window.AndroidShare) {
+                                                navigator.share = function(data) {
+                                                    if (window.AndroidShare) {
+                                                        window.AndroidShare.share(data.title || "", data.text || "", data.url || "");
+                                                        return Promise.resolve();
+                                                    }
+                                                    return Promise.reject("Share interface not initialized");
+                                                };
+                                            }
+                                        })();
+                                        """.trimIndent(),
+                                        null
+                                    )
+                                }
+
+                                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                                    val url = request?.url?.toString() ?: return false
+                                    if (url.startsWith("http://") || url.startsWith("https://")) {
+                                        return false
+                                    }
+                                    try {
+                                        val intent = if (url.startsWith("intent://")) {
+                                            Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
+                                        } else {
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        }
+                                        ctx.startActivity(intent)
+                                        return true
+                                    } catch (e: Exception) {
+                                        Toast.makeText(ctx, "Related application not found", Toast.LENGTH_SHORT).show()
+                                        return true
+                                    }
                                 }
 
                                 override fun onReceivedError(
@@ -311,6 +394,33 @@ class MainActivity : ComponentActivity() {
                                         isPageLoading = false
                                     }
                                 }
+
+                                override fun onShowFileChooser(
+                                    webView: WebView?,
+                                    filePathCallback: ValueCallback<Array<Uri>>?,
+                                    fileChooserParams: FileChooserParams?
+                                ): Boolean {
+                                    this@MainActivity.filePathCallback?.onReceiveValue(null)
+                                    this@MainActivity.filePathCallback = filePathCallback
+
+                                    val intent = fileChooserParams?.createIntent() ?: Intent(Intent.ACTION_GET_CONTENT).apply {
+                                        addCategory(Intent.CATEGORY_OPENABLE)
+                                        type = "image/*"
+                                    }
+                                    try {
+                                        fileChooserLauncher.launch(intent)
+                                    } catch (e: Exception) {
+                                        this@MainActivity.filePathCallback?.onReceiveValue(null)
+                                        this@MainActivity.filePathCallback = null
+                                        Toast.makeText(ctx, "File chooser failed to launch", Toast.LENGTH_SHORT).show()
+                                        return false
+                                    }
+                                    return true
+                                }
+
+                                override fun onPermissionRequest(request: PermissionRequest?) {
+                                    request?.grant(request.resources)
+                                }
                             }
 
                             // Professional Settings for HTML5 content and advertisements
@@ -327,6 +437,8 @@ class MainActivity : ComponentActivity() {
                                 displayZoomControls = false
                                 mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                             }
+
+                            addJavascriptInterface(WebShareInterface(), "AndroidShare")
 
                             webViewRef = this
                             loadUrl(targetUrl)
