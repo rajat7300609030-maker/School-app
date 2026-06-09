@@ -143,7 +143,7 @@ class MainActivity : ComponentActivity() {
         val adUnitId = if (BuildConfig.ADMOB_INTERSTITIAL_AD_ID.isNotEmpty()) {
             BuildConfig.ADMOB_INTERSTITIAL_AD_ID
         } else {
-            "ca-app-pub-3940256099942544/1033173712" // Official AdMob Test Interstitial ID
+            "ca-app-pub-3478133934097048/2599645151" // Production/Original Interstitial Ad ID
         }
 
         val adRequest = AdRequest.Builder().build()
@@ -190,7 +190,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     @Composable
     fun MainLayout() {
-        val targetUrl = "https://theeducationhills.netlify.app/"
+        val targetUrl = "https://educationhills.netlify.app/"
         var webViewRef by remember { mutableStateOf<WebView?>(null) }
         
         // Navigation States
@@ -638,7 +638,7 @@ class MainActivity : ComponentActivity() {
                     adUnitId = if (BuildConfig.ADMOB_BANNER_AD_ID.isNotEmpty()) {
                         BuildConfig.ADMOB_BANNER_AD_ID
                     } else {
-                        "ca-app-pub-3940256099942544/6300978111" // Official AdMob Test Banner ID
+                        "ca-app-pub-3478133934097048/9097760428" // Production/Original Banner Ad ID
                     }
                     loadAd(AdRequest.Builder().build())
                 }

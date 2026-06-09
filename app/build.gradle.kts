@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
@@ -18,7 +20,18 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    manifestPlaceholders["ADMOB_APP_ID"] = "ca-app-pub-3940256099942544~3347511713"
+    val envFile = file("${rootDir}/.env")
+    val envExampleFile = file("${rootDir}/.env.example")
+    var admobId = "ca-app-pub-3478133934097048~8204011381"
+    val prop = Properties()
+    if (envFile.exists()) {
+      envFile.inputStream().use { prop.load(it) }
+      admobId = prop.getProperty("ADMOB_APP_ID") ?: admobId
+    } else if (envExampleFile.exists()) {
+      envExampleFile.inputStream().use { prop.load(it) }
+      admobId = prop.getProperty("ADMOB_APP_ID") ?: admobId
+    }
+    manifestPlaceholders["ADMOB_APP_ID"] = admobId
   }
 
   signingConfigs {
